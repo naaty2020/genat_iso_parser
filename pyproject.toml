@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "genat_iso_parser"
+version = "1.0"
+authors = [
+  { name="Nathnael Fikru", email="natfik2020@gmail.com" },
+]
+description = "An iso message bulk parser"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+source = "https://github.com/pypa/sampleproject"
