@@ -18,3 +18,8 @@ class UnsupportedIsoVersion(KeyError):
         message = f'Unsupported Iso version {errors["version"]}.'
         super().__init__(message)
         self.errors = errors
+
+class FieldNumberError(Exception):
+    def __init__(self, errors, message='Invalid Field Number.'):
+        super().__init__(message)
+        self.errors = errors
