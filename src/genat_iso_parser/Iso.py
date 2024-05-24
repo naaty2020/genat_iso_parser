@@ -1,29 +1,149 @@
 import csv
 import json
 import logging
+import os
 import sys
 import threading
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from itertools import repeat
 from pathlib import Path
 
-from exceptions import *
+from .exceptions import *
 
 MAX_BITMAP = '0' * 16
-SUPPORTED_VERSIONS = '93', '87'
-ISO_FILES = dict(zip(SUPPORTED_VERSIONS, repeat('../ISO.json')))
+ISO_DIR = os.path.join(Path(__file__).parents[2], 'resources')
+SUPPORTED_VERSIONS = set()
+ISO_FILES = {}
+
+for file in os.listdir(ISO_DIR):
+    file = Path(file)
+    if file.suffix == '.json':
+        if file.stem.startswith('ISO_'):
+            ISO_FILES[file.stem[4:]] = os.path.join(ISO_DIR, file)
+            SUPPORTED_VERSIONS.add(file.stem[4:])
+
+if not ISO_FILES:
+    raise Exception('No valid ISO file found!')
 
 
 class Iso(ABC):
 
-    @abstractmethod
-    def get_fields(self, data):
-        pass
+    def __init__(self, version) -> None:
+        super().__init__()
+        self.version = version
+        try:
+            self.iso_file = Path(ISO_FILES[self.version])
+        except KeyError:
+            logging.critical(f'Unsupported Iso version {self.version}.')
+            raise UnsupportedIsoVersion(defaultdict(
+                lambda: '', {'version': self.version}))
+        try:
+            self.load_iso()
+        except Exception as ex:
+            logging.critical(f'Could not open Iso File {self.iso_file}.\t{ex}')
+            raise Exception(f'Could not open Iso File {self.iso_file}.\n{ex}')
+        self.to_be_removed = set()
+        self.to_be_modified = {}
+        self.to_be_added = {}
+        self.include_length = False
 
-    @abstractmethod
+    def get_fields(self, data):
+        record = defaultdict(lambda: '')
+        bitmap_len = Iso.get_bitmap_len(data[4:20])
+        bitmap = data[4:4 + bitmap_len]
+        record['MTI'] = data[:4]
+        record['BITMAP1'] = bitmap[:16]
+        cur = 20
+        pattern = Iso.get_pattern(bitmap)
+        for i in range(len(pattern)):
+            index = str(i + 1)
+            if pattern[i] == '1':
+                if self.iso[index]['pad']:
+                    try:
+                        ln = data[cur:cur + self.iso[index]['pad']]
+                        length = int(ln)
+                    except ValueError:
+                        raise PadValueError(defaultdict(
+                            lambda: '', {'field': index, 'column': cur + 1, 'value': ln}))
+                    if length > self.iso[index]['len']:
+                        raise LengthError(defaultdict(
+                            lambda: '', {'field': index, 'column': cur + 1, 'value': length}))
+                    cur += self.iso[index]['pad']
+                    nxt = cur + length
+                else:
+                    nxt = cur + self.iso[index]['len']
+                if index not in self.to_be_removed:
+                    if index in self.to_be_modified:
+                        val = self.to_be_modified[index]
+                    else:
+                        val = data[cur:nxt]
+                    record[index] = self.get_val(val, index)
+                cur = nxt
+            elif index in self.to_be_added:
+                record[index] = self.get_val(self.to_be_added[index], index)
+
+        record['BITMAP1'] = self.update_bitmap(record['BITMAP1'])
+        if '1' in record:
+            record['1'] = self.update_bitmap(record['1'])
+        return record
+
+    def update_bitmap(self, bitmap):
+        if not (self.to_be_added or self.to_be_removed):
+            return bitmap
+        pattern = list(Iso.get_pattern(bitmap))
+        for index in range(len(pattern)):
+            i = str(index + 1)
+            if i in self.to_be_added:
+                pattern[index] = '1'
+            if i in self.to_be_removed:
+                pattern[index] = '0'
+        return Iso.reconstruct_bitmap(''.join(pattern))
+
+    def get_val(self, val, index):
+        if self.include_length:
+            if self.iso[index]['pad']:
+                val = str(len(val)).zfill(self.iso[index]['pad']) + val
+        return val
+
+    def remove_fields(self, *fields):
+        Iso.validate_field_num(*fields)
+        self.to_be_removed.update({str(i) for i in fields})
+
+    def remove_field(self, field):
+        Iso.validate_field_num(field)
+        self.to_be_removed.add(str(field))
+
+    def append_field(self, field, value):
+        Iso.validate_field_num(field)
+        field = str(field)
+        value = str(value)
+        self.validate_field(field, value)
+        self.to_be_added[field] = value
+
+    def change_field(self, field, value):
+        Iso.validate_field_num(field)
+        field = str(field)
+        value = str(value)
+        self.validate_field(field, value)
+        self.to_be_modified[field] = value
+
+    def validate_field(self, field, value):
+        if self.iso[field]['pad']:
+            if len(field) > self.iso[field]['len']:
+                raise LengthError(defaultdict(lambda: '', {'field': field}))
+
     def load_iso(self):
-        pass
+        with open(self.iso_file) as f:
+            self.iso = json.load(f)
+
+    def turn_on_length(self):
+        self.include_length = True
+
+    def turn_off_length(self):
+        self.include_length = False
+
+    def supported_versions(self):
+        return SUPPORTED_VERSIONS
 
     @staticmethod
     def get_bitmap_len(bitmap: str):
@@ -38,7 +158,24 @@ class Iso(ABC):
                 lambda: '', {'field': '1', 'column': '0'}))
 
     @staticmethod
-    def init_log(file: str):
+    def reconstruct_bitmap(pattern):
+        try:
+            size = 16 if len(pattern) == 64 else 32
+            return hex(int(pattern, 2))[2:].zfill(size)
+        except ValueError:
+            raise InvalidBitmap(defaultdict(
+                lambda: '', {'field': '1', 'column': '0'}))
+
+    @staticmethod
+    def validate_field_num(*fields):
+        validated = all((isinstance(field, int) and 0 < field < 128)
+                        for field in fields)
+        if not validated:
+            logging.error(f'Invalid value found in input {fields}')
+            raise FieldNumberError(
+                f'Invalid field numbers encountered in input {fields}')
+
+    def init_log(self, file='iso.log'):
         if logging.getLogger().hasHandlers():
             return
         logging.basicConfig(
@@ -47,64 +184,9 @@ class Iso(ABC):
 
 class IsoStream(Iso):
     def __init__(self, version='93') -> None:
-        Iso.init_log('iso_stream.log')
-        self.version = version
-        try:
-            self.iso_file = Path(ISO_FILES[self.version])
-        except KeyError:
-            logging.critical(f'Unsupported Iso version {self.version}.')
-            raise UnsupportedIsoVersion(defaultdict(
-                lambda: '', {'version': self.version}))
-        try:
-            self.load_iso()
-        except Exception as ex:
-            logging.critical(f'Could not read Iso File {self.iso_file}.\t{ex}')
-            raise Exception(f'Could not read Iso File {self.iso_file}.\n{ex}')
-        self.to_be_removed = set()
-        self.to_be_modified = {}
+        super().__init__(version)
         self.event = None
         self.streaming = None
-        self.include_length = False
-
-    def get_fields(self, data):
-        record = defaultdict(lambda: '')
-        bitmap_len = Iso.get_bitmap_len(data[4:20])
-        bitmap = data[4:4 + bitmap_len]
-        record['MTI'] = data[:4]
-        record['BITMAP1'] = bitmap[:16]
-        cursor = 20
-        pattern = Iso.get_pattern(bitmap)
-        for index in range(len(pattern)):
-            if pattern[index] == '1':
-                index = str(index + 1)
-                if self.iso[index]['pad']:
-                    try:
-                        length = int(
-                            data[cursor:cursor + self.iso[index]['pad']])
-                    except ValueError:
-                        raise PadValueError(defaultdict(
-                            lambda: '', {'field': index, 'column': cursor + 1}))
-                    if length > self.iso[index]['len']:
-                        raise LengthError(defaultdict(
-                            lambda: '', {'field': index, 'column': cursor + 1}))
-                    cursor += self.iso[index]['pad']
-                    nxt = cursor + length
-                else:
-                    nxt = cursor + self.iso[index]['len']
-                if index not in self.to_be_removed:
-                    if index in self.to_be_modified:
-                        val = self.to_be_modified[index]
-                    else:
-                        val = data[cursor:nxt]
-                    record[index] = self.get_val(val, index)
-                cursor = nxt
-        return record
-
-    def get_val(self, val, index):
-        if self.include_length:
-            if self.iso[index]['pad']:
-                val = str(len(val)).zfill(self.iso[index]['pad']) + val
-        return val
 
     def stream(self, format='json'):
         def stream_internal():
@@ -116,10 +198,11 @@ class IsoStream(Iso):
                     print(self.choose_format(data, format))
                 except Exception as ex:
                     logging.error(ex)
+                    logging.error(ex.errors)
 
         if self.event and self.event.is_set():
             logging.error(
-                'Another stream is in progress. Either stop it or start this thread on a new IsoStream instance.')
+                'Another stream is in progress. Either stop it or start it on a new IsoStream instance.')
             return
 
         self.event = threading.Event()
@@ -135,77 +218,18 @@ class IsoStream(Iso):
             logging.error(f'Unknown format type {format}')
             return ''
 
-    def remove_fields(self, *fields):
-        if self.validate_field_num(*fields):
-            self.to_be_removed.update({str(i) for i in fields})
-
-    def remove_field(self, field):
-        if self.validate_field_num(field):
-            self.to_be_removed.add(str(field))
-
-    def change_field(self, field, value):
-        field = str(field)
-        value = str(value)
-        try:
-            self.validate_field(field, value)
-            self.to_be_modified[field] = value
-        except (PadValueError, LengthError) as ex:
-            logging.error(f'{ex} on field {ex.errors["field"]}')
-
-    def validate_field_num(self, *fields):
-        validated = all((isinstance(field, int) and 0 < field < 128)
-                        for field in fields)
-        if validated:
-            return True
-        else:
-            logging.error(f'Invalid value found in input {fields}')
-
-    def validate_field(self, field, value):
-        if self.iso[field]['pad']:
-            try:
-                length = int(value[:self.iso[field]['pad']])
-            except ValueError:
-                raise PadValueError(defaultdict(lambda: '', {'field': field}))
-            if length > self.iso[field]['len'] or len(value[self.iso[field]['pad']:]) != length:
-                raise LengthError(defaultdict(lambda: '', {'field': field}))
-
     def stop_stream(self):
         self.event.set()
         self.streaming.join()
-
-    def load_iso(self):
-        with open(self.iso_file) as f:
-            self.iso = json.load(f)
-
-    def turn_on_length(self):
-        self.include_length = True
-
-    def turn_off_length(self):
-        self.include_length = False
 
 
 class IsoFile(Iso):
 
     def __init__(self, file, version='93') -> None:
-        Iso.init_log('iso_file.log')
-        self.version = version
-        try:
-            self.iso_file = Path(ISO_FILES[self.version])
-        except KeyError:
-            logging.critical(f'Unsupported Iso version {self.version}.')
-            raise UnsupportedIsoVersion(defaultdict(
-                lambda: '', {'version': self.version}))
-        try:
-            self.load_iso()
-        except Exception as ex:
-            logging.critical(f'Could not open Iso File {self.iso_file}.\t{ex}')
-            raise Exception(f'Could not open Iso File {self.iso_file}.\n{ex}')
+        super().__init__(version)
         self.file = Path(file).resolve()
         self.failed_file = self.file.with_stem(self.file.stem + '_failed')
         self.max_bitmap = MAX_BITMAP
-        self.to_be_removed = set()
-        self.to_be_modified = {}
-        self.include_length = False
 
     def parse(self):
         with open(self.file) as f:
@@ -215,70 +239,6 @@ class IsoFile(Iso):
                 except (LengthError, InvalidBitmap, PadValueError) as ex:
                     logging.error(
                         f'{ex} on line {i} field {ex.errors["field"]} column {ex.errors["column"]}')
-
-    def get_fields(self, data):
-        record = defaultdict(lambda: '')
-        bitmap_len = Iso.get_bitmap_len(data[4:20])
-        bitmap = data[4:4 + bitmap_len]
-        record['MTI'] = data[:4]
-        record['BITMAP1'] = bitmap[:16]
-        cursor = 20
-        pattern = Iso.get_pattern(bitmap)
-        for index in range(len(pattern)):
-            if pattern[index] == '1':
-                index = str(index + 1)
-                if self.iso[index]['pad']:
-                    try:
-                        length = int(
-                            data[cursor:cursor + self.iso[index]['pad']])
-                    except ValueError:
-                        raise PadValueError(defaultdict(
-                            lambda: '', {'field': index, 'column': cursor + 1}))
-                    if length > self.iso[index]['len']:
-                        raise LengthError(defaultdict(
-                            lambda: '', {'field': index, 'column': cursor + 1}))
-                    cursor += self.iso[index]['pad']
-                    nxt = cursor + length
-                else:
-                    nxt = cursor + self.iso[index]['len']
-                if index not in self.to_be_removed:
-                    if index in self.to_be_modified:
-                        val = self.to_be_modified[index]
-                    else:
-                        val = data[cursor:nxt]
-                    record[index] = self.get_val(val, index)
-                cursor = nxt
-        return record
-
-    def get_val(self, val, index):
-        if self.include_length:
-            if self.iso[index]['pad']:
-                val = str(len(val)).zfill(self.iso[index]['pad']) + val
-        return val
-
-    def remove_fields(self, *fields):
-        self.to_be_removed.update({str(i) for i in fields})
-
-    def remove_field(self, field):
-        self.to_be_removed.add(str(field))
-
-    def change_field(self, field, value):
-        field = str(field)
-        value = str(value)
-        try:
-            self.validate_field(field, value)
-            self.to_be_modified[field] = value
-        except (PadValueError, LengthError) as ex:
-            logging.error(f'{ex} on field {ex.errors["field"]}')
-
-    def validate_field(self, field, value):
-        if self.iso[field]['pad']:
-            try:
-                length = int(value[:self.iso[field]['pad']])
-            except ValueError:
-                raise PadValueError(defaultdict(lambda: '', {'field': field}))
-            if length > self.iso[field]['len'] or len(value[self.iso[field]['pad']:]) != length:
-                raise LengthError(defaultdict(lambda: '', {'field': field}))
 
     def to_csv(self):
         records = self.parse()
@@ -297,12 +257,12 @@ class IsoFile(Iso):
         return file
 
     def to_json(self):
-        json_encodeds = self.stream_json()
+        records = self.parse()
         file = self.file.with_suffix('.json')
         with open(file, 'w') as f:
-            f.write('[' + next(json_encodeds))
-            for json_encoded in json_encodeds:
-                f.write(',' + json_encoded)
+            f.write('[' + json.dumps(next(records)))
+            for json_encoded in records:
+                f.write(',' + json.dumps(json_encoded))
             f.write(']')
         return file
 
@@ -333,13 +293,4 @@ class IsoFile(Iso):
                         self.max_bitmap = line[4:n]
                 except ValueError:
                     pass
-
-    def load_iso(self):
-        with open(self.iso_file) as f:
-            self.iso = json.load(f)
-
-    def turn_on_length(self):
-        self.include_length = True
-
-    def turn_off_length(self):
-        self.include_length = False
+        self.max_bitmap = self.update_bitmap(self.max_bitmap)
