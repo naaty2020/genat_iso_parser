@@ -5,6 +5,12 @@ if __name__ == '__main__':
 
     # instantiate an instance of IsoStream
     iso = IsoStream()
+
+    # get current version
+    iso.current_version()
+
+    # get supported versions
+    iso.supported_versions()
     
     # change any field value of your choice
     iso.change_field(2, '9999999999999999')
@@ -29,7 +35,13 @@ if __name__ == '__main__':
 
 
     # instantiate an instance of IsoFile, default version is 93
-    iso = IsoFile("path_to_file")
+    iso = IsoFile(r"E:\projects\iso_parser_first\files\005_decline_reversal")
+
+    # get supported versions
+    iso.supported_versions()
+
+    # get current version
+    iso.current_version()
 
     # change any field value of your choice
     iso.change_field(2, '9999999999999999')
