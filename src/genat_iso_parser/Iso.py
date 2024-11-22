@@ -21,7 +21,8 @@ for file in ISO_DIR:
     file = Path(file)
     if file.suffix == '.json':
         if file.stem.startswith('ISO_'):
-            ISO_FILES[file.stem[-1]] = resource_stream('resources', file.name).name
+            ISO_FILES[file.stem[-1]
+                      ] = resource_stream('resources', file.name).name
             SUPPORTED_VERSIONS.add(file.stem[-1])
 
 DEFAULT_VERSION = '1'
@@ -36,14 +37,53 @@ class Iso(ABC):
         super().__init__()
         self.__iso_version = DEFAULT_VERSION
         self.restore_iso_version_file()
-        self.removed_fields = IsoSet()
-        self.modified_fields = IsoDict()
-        self.added_fields = IsoDict()
-        self.include_length = False
+        self.__removed_fields = IsoSet()
+        self.__changed_fields = IsoDict()
+        self.__added_fields = IsoDict()
+        self.__include_length = False
+
+    @property
+    def removed_fields(self):
+        return self.__removed_fields
+
+    @removed_fields.setter
+    def removed_fields(self, value):
+        if not isinstance(value, IsoSet):
+            raise TypeError('Setting a value that is different from IsoSet is not allowed. Please use update or add.')
+        self.__removed_fields = value
+
+    @property
+    def changed_fields(self):
+        return self.__changed_fields
+
+    @changed_fields.setter
+    def changed_fields(self, value):
+        if not isinstance(value, IsoDict):
+            raise TypeError('Setting a value that is different from IsoDict is not allowed. Please use update or assign.')
+        self.__changed_fields = value
+
+    @property
+    def added_fields(self):
+        return self.__added_fields
+
+    @added_fields.setter
+    def added_fields(self, value):
+        if not isinstance(value, IsoDict):
+            raise TypeError('Setting a value that is different from IsoDict is not allowed. Please use update or assign.')
+        self.__added_fields = value
 
     @property
     def iso_version(self):
         return self.__iso_version
+
+    @property
+    def include_length(self):
+        return self.__include_length
+
+    @include_length.setter
+    def include_length(self, value):
+        if isinstance(value, bool):
+            self.__include_length = value
 
     def get_fields(self, data):
         self.validate_mti(data[0])
@@ -71,15 +111,15 @@ class Iso(ABC):
                     nxt = cur + length
                 else:
                     nxt = cur + self.iso[index]['len']
-                if index not in self.removed_fields:
-                    if index in self.modified_fields:
-                        val = self.modified_fields[index]
+                if index not in self.__removed_fields:
+                    if index in self.__changed_fields:
+                        val = self.__changed_fields[index]
                     else:
                         val = data[cur:nxt]
                     record[index] = self.get_val(val, index)
                 cur = nxt
-            elif index in self.added_fields:
-                record[index] = self.get_val(self.added_fields[index], index)
+            elif index in self.__added_fields:
+                record[index] = self.get_val(self.__added_fields[index], index)
 
         record['BITMAP1'] = self.update_bitmap(record['BITMAP1'])
         if '1' in record:
@@ -88,23 +128,25 @@ class Iso(ABC):
 
     def validate_mti(self, mti1):
         if mti1 != self.__iso_version:
-            logging.error(f'Wrong or unsupported iso version! Expected version\'{self.__iso_version}\' Got \'{mti1}\'')
-            raise Exception(f'Wrong or unsupported iso version! Expected version\'{self.__iso_version}\' Got \'{mti1}\'')
+            logging.error('Wrong or unsupported iso version! Expected version\'{}\' Got \'{}\''.format(
+                self.__iso_version, mti1))
+            raise Exception('Wrong or unsupported iso version! Expected version\'{}\' Got \'{}\''.format(
+                self.__iso_version, mti1))
 
     def update_bitmap(self, bitmap):
-        if not (self.added_fields or self.removed_fields):
+        if not (self.__added_fields or self.__removed_fields):
             return bitmap
         pattern = list(Iso.get_pattern(bitmap))
         for index in range(len(pattern)):
             i = str(index + 1)
-            if i in self.added_fields:
+            if i in self.__added_fields:
                 pattern[index] = '1'
-            if i in self.removed_fields:
+            if i in self.__removed_fields:
                 pattern[index] = '0'
         return Iso.reconstruct_bitmap(''.join(pattern))
 
     def get_val(self, val, index):
-        if self.include_length:
+        if self.__include_length:
             if self.iso[index]['pad']:
                 val = str(len(val)).zfill(self.iso[index]['pad']) + val
         return val
@@ -114,8 +156,10 @@ class Iso(ABC):
             with open(self.iso_file) as f:
                 self.iso = json.load(f)
         except Exception as ex:
-            logging.critical(f'Could not open Iso File {self.iso_file}.\t{ex}')
-            raise Exception(f'Could not open Iso File {self.iso_file}.\n{ex}')
+            logging.critical(
+                'Could not open Iso File {}.\t{}'.format(self.iso_file, ex))
+            raise Exception(
+                'Could not open Iso File {}.\n{}'.format(self.iso_file, ex))
 
     def custom_iso_version_file(self, file, version):
         self.__iso_version = version
@@ -131,7 +175,7 @@ class Iso(ABC):
             self.__iso_version = version
             self.load_iso()
         except KeyError:
-            logging.critical(f'Unsupported Iso version {version}.')
+            logging.critical('Unsupported Iso version {}.'.format(version))
             raise UnsupportedIsoVersion(defaultdict(
                 lambda: '', {'version': version}))
 
@@ -144,7 +188,10 @@ class Iso(ABC):
             download_path = Path(download_path).absolute().resolve()
             shutil.copy(ISO_FILES[version], download_path)
         except KeyError:
-            print(f'Unsupported Iso version {version}.')
+            print('Unsupported Iso version {}.'.format(version))
+
+    def supported_versions(self):
+        return SUPPORTED_VERSIONS
 
     @staticmethod
     def get_bitmap_len(bitmap: str):
@@ -169,12 +216,34 @@ class Iso(ABC):
 
     @staticmethod
     def validate_field_num(*fields):
-        validated = all((isinstance(field, int) and 0 < field < 128)
+        fields = tuple(str(field) for field in fields)
+        validated = all((field.isdigit() and 0 < int(field) < 128)
                         for field in fields)
         if not validated:
-            logging.error(f'Invalid value found in input {fields}')
+            logging.error('Invalid value found in input {}'.format(fields))
             raise FieldNumberError(
-                f'Invalid field numbers encountered in input {fields}')
+                'Invalid field numbers encountered in input {}'.format(fields))
+
+    @staticmethod
+    def validate_field_num_set(fields):
+        fields = set(str(field) for field in fields)
+        validated = all((field.isdigit() and 0 < int(field) < 128)
+                        for field in fields)
+        if not validated:
+            logging.error('Invalid value found in input {}'.format(fields))
+            raise FieldNumberError(
+                'Invalid field numbers encountered in input {}'.format(fields))
+        return fields
+
+    @staticmethod
+    def validate_fields(kv):
+        for k in kv.copy():
+            if isinstance(k, int):
+                kv[str(k)] = kv.pop(k)
+            elif not (isinstance(k, str) and k.isdigit() and 0 < int(k) < 128):
+                logging.error('Invalid value found in input {}'.format(kv))
+                raise FieldNumberError(
+                    'Invalid field numbers encountered in input {}'.format(kv))
 
     def init_log(self, file='iso.log'):
         if not logging.getLogger().hasHandlers():
@@ -199,7 +268,7 @@ class IsoStream(Iso):
                 except Exception as ex:
                     logging.error(ex)
 
-        if self.event and self.event.is_set():
+        if self.event and not self.event.is_set():
             logging.error(
                 'Another stream is in progress. Either stop it or start it on a new IsoStream instance.')
             return
@@ -214,7 +283,7 @@ class IsoStream(Iso):
         elif format == 'iso':
             return ''.join(self.get_fields(data).values())
         else:
-            logging.error(f'Unknown format type {format}')
+            logging.error('Unknown format type {}'.format(format))
             return ''
 
     def stop_stream(self):
@@ -237,7 +306,7 @@ class IsoFile(Iso):
                     yield self.get_fields(line)
                 except (LengthError, InvalidBitmap, PadValueError) as ex:
                     logging.error(
-                        f'{ex} on line {i} field {ex.errors["field"]} column {ex.errors["column"]}')
+                        '{} on line {} field {ex.errors["field"]} column {ex.errors["column"]}'.format(ex, i))
                 except Exception as ex:
                     logging.error(ex)
 
@@ -281,7 +350,7 @@ class IsoFile(Iso):
         hdr = ['MTI', 'BITMAP1']
         for index in range(len(pattern)):
             if pattern[index] == '1':
-                hdr.append(f'DE{index + 1}')
+                hdr.append('DE{}'.format(index + 1))
         return hdr
 
     def choose_bitmap(self):
@@ -310,18 +379,15 @@ class IsoSet(set):
         Iso.validate_field_num(value)
         super().add(str(value))
 
-    def update(self, *s) -> None:
-        Iso.validate_field_num(*s)
-        return super().update(*s)
+    def update(self, s) -> None:
+        s = Iso.validate_field_num_set(s)
+        super().update(*s)
 
-    def union(self, *s):
-        Iso.validate_field_num(*s)
-        return super().union(*s)
 
 class IsoDict(dict):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Iso.validate_field_num(*self.keys())
+        Iso.validate_fields(self)
 
     def __setitem__(self, key, value):
         Iso.validate_field_num(key)
