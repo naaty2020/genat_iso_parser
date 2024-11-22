@@ -444,73 +444,73 @@
         "pad": 0
     },
     "75": {
-        "long": "Credits, Reversal Number?",
+        "long": "Credits, Reversal Number",
         "short": "Credits, Rvrsl Num",
         "len": 10,
         "pad": 0
     },
     "76": {
-        "long": "Debits, Number?",
+        "long": "Debits, Number",
         "short": "Debits, Number",
         "len": 10,
         "pad": 0
     },
     "77": {
-        "long": "Debits, Reversal Number?",
+        "long": "Debits, Reversal Number",
         "short": "Debits, Rvrsl Num",
         "len": 10,
         "pad": 0
     },
     "78": {
-        "long": "Transfers, Number?",
+        "long": "Transfers, Number",
         "short": "Transfers, Num",
         "len": 10,
         "pad": 0
     },
     "79": {
-        "long": "Transfers, Reversal Number?",
+        "long": "Transfers, Reversal Number",
         "short": "Transfers, Reversal Num",
         "len": 10,
         "pad": 0
     },
     "80": {
-        "long": "Inquiries, Number?",
+        "long": "Number of Inquiries",
         "short": "Inquiries, Num",
         "len": 10,
         "pad": 0
     },
     "81": {
-        "long": "Authorizations, Number?",
+        "long": "Number of authorizations",
         "short": "Authorizations, Num",
         "len": 10,
         "pad": 0
     },
     "82": {
-        "long": "Credits, Processing Fee Amount?",
+        "long": "Credits, Processing Fee Amount",
         "short": "Credits, Processing Fee Amt",
         "len": 12,
         "pad": 0
     },
     "83": {
-        "long": "Credits, Transaction Fee Amount?",
+        "long": "Credits, Transaction Fee Amount",
         "short": "Credits, Txn Fee Amt",
         "len": 12,
         "pad": 0
     },
     "84": {
-        "long": "Debits, Processing Fee Amount?",
+        "long": "Debits, Processing Fee Amount",
         "short": "Debits, Processing Fee Amt",
         "len": 12,
         "pad": 0
     },
     "85": {
-        "long": "Debits, Transaction Fee Amount?",
+        "long": "Debits, Transaction Fee Amount",
         "short": "Debits, Txn Fee Amt",
         "len": 12,
         "pad": 0
     },
     "86": {
-        "long": "Credits, Amount?",
+        "long": "Total Amount of Credits",
         "short": "Credits, Amt",
         "len": 16,
         "pad": 0
@@ -522,73 +522,73 @@
         "pad": 0
     },
     "88": {
-        "long": "Debits, Amount?",
+        "long": "Total Amount of Debits",
         "short": "Debits, Amt",
         "len": 16,
         "pad": 0
     },
     "89": {
-        "long": "Debits, Reversal Amount?",
+        "long": "Debits, Reversal Amount",
         "short": "Debits, Rvrsl Amt",
         "len": 16,
         "pad": 0
     },
     "90": {
-        "long": "Original Data Elements?",
+        "long": "Original Data Elements",
         "short": "Orig Data Elmnts",
         "len": 42,
         "pad": 0
     },
     "91": {
-        "long": "File Update Code?",
+        "long": "File Update Code",
         "short": "File Upd Code",
         "len": 1,
         "pad": 0
     },
     "92": {
-        "long": "File Security Code?",
+        "long": "File Security Code",
         "short": "File Security Code",
         "len": 2,
         "pad": 0
     },
     "93": {
-        "long": "Transaction Destination Institution Identification Code",
-        "short": "Txn Destn Inst ID",
-        "len": 11,
-        "pad": 2
+        "long": "Response Indicator",
+        "short": "Response Indicator",
+        "len": 5,
+        "pad": 0
     },
     "94": {
-        "long": "Transaction Originator Institution Identification Code",
-        "short": "Txn Orig Inst ID",
-        "len": 11,
-        "pad": 2
+        "long": "Service Indicator",
+        "short": "Service Indicator",
+        "len": 7,
+        "pad": 0
     },
     "95": {
-        "long": "Replacement Amounts?",
+        "long": "Replacement Amounts",
         "short": "Replacement Amts",
         "len": 42,
         "pad": 0
     },
     "96": {
-        "long": "Key Management Data",
-        "short": "Key Mgmt Data",
-        "len": 547,
-        "pad": 3
+        "long": "Message Security Code",
+        "short": "Message Security Code",
+        "len": 64,
+        "pad": 0
     },
     "97": {
-        "long": "Amount Net Settlement?",
+        "long": "Net Settlement Amount",
         "short": "Amt Net Stl",
-        "len": 16,
+        "len": 17,
         "pad": 0
     },
     "98": {
-        "long": "Payee?",
+        "long": "Payee",
         "short": "Payee",
         "len": 25,
         "pad": 0
     },
     "99": {
-        "long": "Settlement Institution Identification Code?",
+        "long": "Settlement Institution Identification Code",
         "short": "Stl Inst ID Code",
         "len": 11,
         "pad": 2
@@ -600,7 +600,7 @@
         "pad": 2
     },
     "101": {
-        "long": "File Name?",
+        "long": "File Name",
         "short": "File Name",
         "len": 17,
         "pad": 2
@@ -618,117 +618,117 @@
         "pad": 2
     },
     "104": {
-        "long": "Transaction Description?",
+        "long": "Transaction Description",
         "short": "Txn Desc",
         "len": 100,
         "pad": 3
     },
     "105": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "106": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "107": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "108": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "109": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "110": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "111": {
-        "long": "Reserved for ISO Use?",
+        "long": "Reserved for ISO Use",
         "short": "Reserved for ISO Use",
         "len": 999,
         "pad": 3
     },
     "112": {
-        "long": "Additional Data (National Use)?",
-        "short": "Additional Data (National Use)",
-        "len": 248,
+        "long": "Reserved for National Use",
+        "short": "Reserved for National Use",
+        "len": 999,
         "pad": 3
     },
     "113": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "114": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "115": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "116": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "117": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "118": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "119": {
-        "long": "Reserved for National Use?",
+        "long": "Reserved for National Use",
         "short": "Reserved for National Use",
         "len": 999,
         "pad": 3
     },
     "120": {
-        "long": "Record Data?",
-        "short": "Record Data",
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
         "len": 999,
         "pad": 3
     },
     "121": {
-        "long": "Authorizing Agent Identification Code?",
-        "short": "Auth Agent ID Code",
-        "len": 11,
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
+        "len": 999,
         "pad": 3
     },
     "122": {
-        "long": "Additional Record Data?",
-        "short": "Additional Record Data",
-        "len": 100,
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
+        "len": 999,
         "pad": 3
     },
     "123": {
@@ -740,31 +740,31 @@
     "124": {
         "long": "Reserved for Private Use",
         "short": "Reserved for Private Use",
-        "len": 9999,
-        "pad": 4
+        "len": 999,
+        "pad": 3
     },
     "125": {
         "long": "Reserved for Private Use",
         "short": "Reserved for Private Use",
-        "len": 9999,
-        "pad": 4
+        "len": 999,
+        "pad": 3
     },
     "126": {
-        "long": "Switch Private Data?",
-        "short": "Switch Private Data",
-        "len": 50,
-        "pad": 2
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
+        "len": 999,
+        "pad": 3
     },
     "127": {
         "long": "Reserved for Private Use",
         "short": "Reserved for Private Use",
-        "len": 9999,
-        "pad": 4
+        "len": 999,
+        "pad": 3
     },
     "128": {
-        "long": "Secondary Message Authentication Code",
-        "short": "Secondary MAC",
-        "len": 16,
+        "long": "Message Authentication Code",
+        "short": "MAC",
+        "len": 64,
         "pad": 0
     }
 }
