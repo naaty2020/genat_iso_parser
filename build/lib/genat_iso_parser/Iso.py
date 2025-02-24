@@ -7,15 +7,24 @@ import sys
 import threading
 from abc import ABC
 from collections import defaultdict
-from collections.abc import Mapping
 from pathlib import Path
-from pkg_resources import resource_filename
+from pkg_resources import resource_listdir, resource_stream
 
 from .exceptions import *
 
 MAX_BITMAP = '0' * 16
-SUPPORTED_VERSIONS = {'0': 'ISO8583 87', '1': 'ISO8583 93'}
-ISO_FILES = {'0': resource_filename('iso_res', 'ISO_0 copy.json'), '1': resource_filename('iso_res', 'ISO_1.json')}
+ISO_DIR = resource_listdir('resources', '')
+SUPPORTED_VERSIONS = set()
+ISO_FILES = {}
+
+for file in ISO_DIR:
+    file = Path(file)
+    if file.suffix == '.json':
+        if file.stem.startswith('ISO_'):
+            ISO_FILES[file.stem[-1]
+                      ] = resource_stream('resources', file.name).name
+            SUPPORTED_VERSIONS.add(file.stem[-1])
+
 DEFAULT_VERSION = '1'
 
 if not ISO_FILES:
@@ -26,6 +35,7 @@ class Iso(ABC):
 
     def __init__(self) -> None:
         super().__init__()
+        self.__iso_version = DEFAULT_VERSION
         self.restore_iso_version_file()
         self.__removed_fields = IsoSet()
         self.__changed_fields = IsoDict()
@@ -75,18 +85,15 @@ class Iso(ABC):
         if isinstance(value, bool):
             self.__include_length = value
 
-    def get_fields(self, data, is_iso=False):
+    def get_fields(self, data):
         self.validate_mti(data[0])
         record = defaultdict(lambda: '')
         bitmap_len = Iso.get_bitmap_len(data[4:20])
         bitmap = data[4:4 + bitmap_len]
         record['MTI'] = data[:4]
         record['BITMAP1'] = bitmap[:16]
-        pattern = Iso.get_pattern(bitmap)
-        pattern, new_pattern = self.update_pattern(pattern)
-        if pattern != new_pattern:
-            record['1'] = ''
         cur = 20
+        pattern = Iso.get_pattern(bitmap)
         for i in range(len(pattern)):
             index = str(i + 1)
             if pattern[i] == '1':
@@ -109,45 +116,27 @@ class Iso(ABC):
                         val = self.__changed_fields[index]
                     else:
                         val = data[cur:nxt]
-                    record[index] = self.get_val(val, index, is_iso)
-                else:
-                    new_pattern[i] = '0'
+                    record[index] = self.get_val(val, index)
                 cur = nxt
             elif index in self.__added_fields:
-                record[index] = self.get_val(self.__added_fields[index], index, is_iso)
-                new_pattern[i] = '1'
+                record[index] = self.get_val(self.__added_fields[index], index)
 
-        new_bitmap = self.apply_bitmap(''.join(new_pattern))
-        record.update(new_bitmap)
+        record['BITMAP1'] = self.update_bitmap(record['BITMAP1'])
+        if '1' in record:
+            record['1'] = self.update_bitmap(record['1'])
         return record
-    
-    def update_pattern(self, pattern):
-        if len(pattern) == 64 and any(x > '64' for x in self.__added_fields):
-            pattern += '0' * 64
-            new_pattern = pattern[:]
-            new_pattern[0] = '1'
-        else:
-            new_pattern = pattern[:]
-        return pattern, new_pattern
 
     def validate_mti(self, mti1):
         if mti1 != self.__iso_version:
-            msg = 'Wrong or unsupported iso version! Expected version\'{}\' Got \'{}\''.format(self.__iso_version, mti1)
-            logging.error(msg)
-            raise Exception(msg)
-        
-    def apply_bitmap(self, pattern):
-        new_bitmap = Iso.reconstruct_bitmap(pattern)
-        if len(new_bitmap) == 16:
-            bitmap = {'BITMAP1': new_bitmap}
-        else:
-            bitmap = {'BITMAP1': new_bitmap[:16], '1': new_bitmap[16:]}
-        return bitmap
+            logging.error('Wrong or unsupported iso version! Expected version\'{}\' Got \'{}\''.format(
+                self.__iso_version, mti1))
+            raise Exception('Wrong or unsupported iso version! Expected version\'{}\' Got \'{}\''.format(
+                self.__iso_version, mti1))
 
     def update_bitmap(self, bitmap):
         if not (self.__added_fields or self.__removed_fields):
             return bitmap
-        pattern = Iso.get_pattern(bitmap)
+        pattern = list(Iso.get_pattern(bitmap))
         for index in range(len(pattern)):
             i = str(index + 1)
             if i in self.__added_fields:
@@ -156,8 +145,8 @@ class Iso(ABC):
                 pattern[index] = '0'
         return Iso.reconstruct_bitmap(''.join(pattern))
 
-    def get_val(self, val, index, is_iso=False):
-        if is_iso or self.__include_length:
+    def get_val(self, val, index):
+        if self.__include_length:
             if self.iso[index]['pad']:
                 val = str(len(val)).zfill(self.iso[index]['pad']) + val
         return val
@@ -167,9 +156,10 @@ class Iso(ABC):
             with open(self.iso_file) as f:
                 self.iso = json.load(f)
         except Exception as ex:
-            msg = 'Could not open Iso File {}.\t{}'.format(self.iso_file, ex)
-            logging.critical(msg)
-            raise Exception(msg)
+            logging.critical(
+                'Could not open Iso File {}.\t{}'.format(self.iso_file, ex))
+            raise Exception(
+                'Could not open Iso File {}.\n{}'.format(self.iso_file, ex))
 
     def custom_iso_version_file(self, file, version):
         self.__iso_version = version
@@ -210,7 +200,7 @@ class Iso(ABC):
     @staticmethod
     def get_pattern(bitmap):
         try:
-            return list(bin(int(bitmap, 16))[2:].zfill(len(bitmap) * 4))
+            return bin(int(bitmap, 16))[2:].zfill(len(bitmap) * 4)
         except ValueError:
             raise InvalidBitmap(defaultdict(
                 lambda: '', {'field': '1', 'column': '0'}))
@@ -274,12 +264,9 @@ class IsoStream(Iso):
                 if data.isspace() or data == '':
                     continue
                 try:
-                    fields = self.get_fields(data, is_iso=format=='iso')
-                    formatted_fields = self.choose_format(fields, format)
-                    print(formatted_fields)
+                    print(self.choose_format(data, format))
                 except Exception as ex:
                     logging.error(ex)
-                    print(ex, ex.errors)
 
         if self.event and not self.event.is_set():
             logging.error(
@@ -288,14 +275,13 @@ class IsoStream(Iso):
 
         self.event = threading.Event()
         self.streaming = threading.Thread(target=stream_internal)
-        self.streaming.daemon = True
         self.streaming.start()
 
-    def choose_format(self, fields, format):
+    def choose_format(self, data, format):
         if format == 'json':
-            return json.dumps(fields)
+            return json.dumps(self.get_fields(data))
         elif format == 'iso':
-            return ''.join(fields.values())
+            return ''.join(self.get_fields(data).values())
         else:
             logging.error('Unknown format type {}'.format(format))
             return ''
@@ -313,29 +299,23 @@ class IsoFile(Iso):
         self.failed_file = self.file.with_stem(self.file.stem + '_failed')
         self.max_bitmap = MAX_BITMAP
 
-    def parse(self, is_iso=False):
+    def parse(self):
         with open(self.file) as f:
             for i, line in enumerate(f, 1):
                 try:
-                    yield self.get_fields(line, is_iso)
+                    yield self.get_fields(line)
                 except (LengthError, InvalidBitmap, PadValueError) as ex:
                     logging.error(
-                        '{} on line {} field {} column {}'.format(ex, i, ex.errors["field"], ex.errors["column"]))
+                        '{} on line {} field {ex.errors["field"]} column {ex.errors["column"]}'.format(ex, i))
                 except Exception as ex:
                     logging.error(ex)
-
-    def get_file_name(self, extension):
-        file = self.file.with_suffix(extension)
-        while os.path.exists(file):
-            file = file.with_stem(file.stem + '1')
-        return file
 
     def to_csv(self):
         records = self.parse()
         header = self.make_header()
         pattern = Iso.get_pattern(self.max_bitmap)
         pattern_range = range(len(pattern))
-        file = self.get_file_name('.csv')
+        file = self.file.with_suffix('.csv')
         with open(file, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)
@@ -348,7 +328,7 @@ class IsoFile(Iso):
 
     def to_json(self):
         records = self.parse()
-        file = self.get_file_name('.json')
+        file = self.file.with_suffix('.json')
         with open(file, 'w') as f:
             f.write('[' + json.dumps(next(records)))
             for json_encoded in records:
@@ -357,8 +337,8 @@ class IsoFile(Iso):
         return file
 
     def to_iso(self):
-        records = self.parse(is_iso=True)
-        file = self.get_file_name('.iso')
+        records = self.parse()
+        file = self.file.with_suffix('.iso')
         with open(file, 'w') as f:
             for record in records:
                 f.write(''.join(record.values()) + '\n')
@@ -414,8 +394,3 @@ class IsoDict(dict):
         key = str(key)
         value = str(value)
         super().__setitem__(key, value)
-
-    def update(self, other=None, **kwargs):
-        if other is not None and isinstance(other, Mapping):
-            Iso.validate_fields(other)
-        super().update(other, **kwargs)

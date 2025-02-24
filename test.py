@@ -10,7 +10,7 @@ if __name__ == '__main__':
     iso.iso_version
 
     # get supported versions
-    iso.supported_versions()
+    print(iso.supported_versions())
 
     # change any field value of your choice
     iso.changed_fields = IsoDict({3: '001100'})
@@ -25,25 +25,31 @@ if __name__ == '__main__':
     iso.added_fields[99] = 'isuhgghioadhfgioahdnf'
 
     # allow length of fields(if there is any) tobe printed to the output
-    iso.include_length = True
-
-    # turn off fields length to be printed
     iso.include_length = False
 
     # capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
-    iso.stream()
+    iso.stream('json')
 
     # stop streaming
     iso.stop_stream()
 
+    # turn off fields length to be printed
+    iso.include_length = True
+
+    # capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
+    iso.stream('iso')
+
+    # stop streaming
+    iso.stop_stream()
+    
     # instantiate an instance of IsoFile, default version is 93
-    iso = IsoFile(r"E:\projects\iso_parser_first\files\005_decline_reversal")
+    iso = IsoFile(r"E:\projects\iso_parser_first\files\1430all messages_300123_copy.txt1")
 
     # get current version
     iso.iso_version
 
     # get supported versions
-    iso.supported_versions()
+    print(iso.supported_versions())
 
     # change any field value of your choice
     iso.changed_fields = IsoDict({3: '001100'})
@@ -54,20 +60,31 @@ if __name__ == '__main__':
     iso.removed_fields.update({3, 4})
 
     # add a field alomg with value
-    iso.added_fields = {100: 'rewayhfgiojsed'}
+    # iso.added_fields = {100: 'rewayhfgiojsed'}
     iso.added_fields[99] = 'isuhgghifgiosdjfoiaknoadhfgioahdnf'
-
-    # allow length of fields(if there is any) tobe printed to the output
-    iso.include_length = True
 
     # turn off fields length to be printed
     iso.include_length = False
 
+    iso.download_iso_file(download_path='E:\\')
+
     # produce csv file from the iso
-    csv_file = iso.to_csv()
+    # csv_file = iso.to_csv()
 
     # produce iso file from the iso (might be useful for inspection of the iso)
-    iso_file = iso.to_iso()
+    # iso_file = iso.to_iso()
 
-    # produce json file from the iso
-    json_file = iso.to_json()
+    # # produce json file from the iso
+    # json_file = iso.to_json()
+
+    # # allow length of fields(if there is any) tobe printed to the output
+    # iso.include_length = True
+
+    # produce csv file from the iso
+    # csv_file = iso.to_csv()
+
+    # # produce iso file from the iso (might be useful for inspection of the iso)
+    # iso_file = iso.to_iso()
+
+    # # produce json file from the iso
+    # json_file = iso.to_json()

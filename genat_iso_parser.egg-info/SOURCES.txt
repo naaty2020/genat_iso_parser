@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+genat_iso_parser.egg-info/PKG-INFO
+genat_iso_parser.egg-info/SOURCES.txt
+genat_iso_parser.egg-info/dependency_links.txt
+genat_iso_parser.egg-info/top_level.txt
+resources/__init__.py
