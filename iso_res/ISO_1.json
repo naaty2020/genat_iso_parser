@@ -1,0 +1,770 @@
+{
+    "1": {
+        "long": "Secondary Bit Map",
+        "short": "BITMAP2",
+        "len": 16,
+        "pad": 0
+    },
+    "2": {
+        "long": "Primary Account Number",
+        "short": "PAN",
+        "len": 19,
+        "pad": 2
+    },
+    "3": {
+        "long": "Processing Code",
+        "short": "Proc Cod",
+        "len": 6,
+        "pad": 0
+    },
+    "4": {
+        "long": "Amount, Transaction",
+        "short": "Txn Amt",
+        "len": 12,
+        "pad": 0
+    },
+    "5": {
+        "long": "Amount, Reconciliation",
+        "short": "Recon Amt",
+        "len": 12,
+        "pad": 0
+    },
+    "6": {
+        "long": "Amount, Cardholder Billing",
+        "short": "Bil Amt",
+        "len": 12,
+        "pad": 0
+    },
+    "7": {
+        "long": "Transmission Date and Time",
+        "short": "Date Time",
+        "len": 10,
+        "pad": 0
+    },
+    "8": {
+        "long": "Amount, Cardholder Billing Fee",
+        "short": "Bil Fee Amt",
+        "len": 8,
+        "pad": 0
+    },
+    "9": {
+        "long": "Conversion Rate, Reconciliation",
+        "short": "Recon Rate",
+        "len": 8,
+        "pad": 0
+    },
+    "10": {
+        "long": "Conversion Rate, Cardholder Billing",
+        "short": "Bil Rate",
+        "len": 8,
+        "pad": 0
+    },
+    "11": {
+        "long": "System Trace Audit Number",
+        "short": "STAN",
+        "len": 6,
+        "pad": 0
+    },
+    "12": {
+        "long": "Date and Time, Local Transaction",
+        "short": "Local Date Time",
+        "len": 12,
+        "pad": 0
+    },
+    "13": {
+        "long": "Date, Effective",
+        "short": "Eff Date",
+        "len": 4,
+        "pad": 0
+    },
+    "14": {
+        "long": "Date, Expiration",
+        "short": "Exp Date",
+        "len": 4,
+        "pad": 0
+    },
+    "15": {
+        "long": "Date, Settlement",
+        "short": "Stl Date",
+        "len": 6,
+        "pad": 0
+    },
+    "16": {
+        "long": "Date, Conversion",
+        "short": "Conversion Date",
+        "len": 4,
+        "pad": 0
+    },
+    "17": {
+        "long": "Date, Capture",
+        "short": "Capture Date",
+        "len": 4,
+        "pad": 0
+    },
+    "18": {
+        "long": "Merchant Type",
+        "short": "MCC",
+        "len": 4,
+        "pad": 0
+    },
+    "19": {
+        "long": "Country Code, Acquiring Institution",
+        "short": "Acq Country",
+        "len": 3,
+        "pad": 0
+    },
+    "20": {
+        "long": "Primary Account Number Country Code",
+        "short": "PAN Country",
+        "len": 3,
+        "pad": 0
+    },
+    "21": {
+        "long": "Country Code, Forwarding Institution",
+        "short": "Fwd Inst Country",
+        "len": 3,
+        "pad": 0
+    },
+    "22": {
+        "long": "Point of Service Data Code",
+        "short": "POS Data",
+        "len": 12,
+        "pad": 0
+    },
+    "23": {
+        "long": "Card Sequence Number",
+        "short": "Seq Num",
+        "len": 3,
+        "pad": 0
+    },
+    "24": {
+        "long": "Function Code",
+        "short": "Fn Code",
+        "len": 3,
+        "pad": 0
+    },
+    "25": {
+        "long": "Message Reason Code",
+        "short": "Msg Reason Code",
+        "len": 4,
+        "pad": 0
+    },
+    "26": {
+        "long": "Card Acceptor Business Code",
+        "short": "Merchant Business Code",
+        "len": 4,
+        "pad": 0
+    },
+    "27": {
+        "long": "Approval Code Length",
+        "short": "Auth ID Resp Len",
+        "len": 1,
+        "pad": 0
+    },
+    "28": {
+        "long": "Date, Reconciliation",
+        "short": "Recon Date",
+        "len": 6,
+        "pad": 0
+    },
+    "29": {
+        "long": "Reconciliation Indicator",
+        "short": "Recon Indic",
+        "len": 3,
+        "pad": 0
+    },
+    "30": {
+        "long": "Amounts, Original",
+        "short": "Orig Amts",
+        "len": 24,
+        "pad": 0
+    },
+    "31": {
+        "long": "Acquirer Reference Data",
+        "short": "Acq Reference Data",
+        "len": 99,
+        "pad": 2
+    },
+    "32": {
+        "long": "Acquiring Institution ID Code",
+        "short": "Acquirer ID",
+        "len": 99,
+        "pad": 2
+    },
+    "33": {
+        "long": "Forwarding Institution ID Code",
+        "short": "Fwd Inst ID",
+        "len": 99,
+        "pad": 2
+    },
+    "34": {
+        "long": "Primary Account Number, Extended",
+        "short": "PAN Extended",
+        "len": 28,
+        "pad": 2
+    },
+    "35": {
+        "long": "Track 2 Data",
+        "short": "Track 2",
+        "len": 99,
+        "pad": 2
+    },
+    "36": {
+        "long": "Track 3 Data",
+        "short": "Track 3",
+        "len": 999,
+        "pad": 3
+    },
+    "37": {
+        "long": "Retrieval Reference Number",
+        "short": "RRN",
+        "len": 12,
+        "pad": 0
+    },
+    "38": {
+        "long": "Approval Code",
+        "short": "Approval Code",
+        "len": 6,
+        "pad": 0
+    },
+    "39": {
+        "long": "Action Code",
+        "short": "Action Code",
+        "len": 3,
+        "pad": 0
+    },
+    "40": {
+        "long": "Service Code",
+        "short": "Service Code",
+        "len": 3,
+        "pad": 0
+    },
+    "41": {
+        "long": "Card Acceptor Terminal Identification",
+        "short": "Terminal ID",
+        "len": 16,
+        "pad": 0
+    },
+    "42": {
+        "long": "Card Acceptor Identification Code",
+        "short": "Merchant ID",
+        "len": 15,
+        "pad": 0
+    },
+    "43": {
+        "long": "Card Acceptor Name/Location",
+        "short": "Merchant Name/Loc",
+        "len": 99,
+        "pad": 2
+    },
+    "44": {
+        "long": "Additional Response Data",
+        "short": "Additional Resp Data",
+        "len": 99,
+        "pad": 2
+    },
+    "45": {
+        "long": "Track 1 Data",
+        "short": "Track 1",
+        "len": 99,
+        "pad": 2
+    },
+    "46": {
+        "long": "Amounts, Fees",
+        "short": "Amounts, Fees",
+        "len": 999,
+        "pad": 3
+    },
+    "47": {
+        "long": "Additional Data (National)",
+        "short": "Additional Data (National)",
+        "len": 999,
+        "pad": 3
+    },
+    "48": {
+        "long": "Additional Data - Private Data Element",
+        "short": "Additional Data - PDE",
+        "len": 999,
+        "pad": 3
+    },
+    "49": {
+        "long": "Currency Code, Transaction",
+        "short": "Txn CCY Code",
+        "len": 3,
+        "pad": 0
+    },
+    "50": {
+        "long": "Currency Code, Reconciliation",
+        "short": "Recon CCY Code",
+        "len": 3,
+        "pad": 0
+    },
+    "51": {
+        "long": "Currency Code, Cardholder Billing",
+        "short": "Bil CCY Code",
+        "len": 3,
+        "pad": 0
+    },
+    "52": {
+        "long": "Personal Identification Number Data",
+        "short": "PIN Data",
+        "len": 16,
+        "pad": 0
+    },
+    "53": {
+        "long": "Security Related Control Information",
+        "short": "Security Control",
+        "len": 99,
+        "pad": 2
+    },
+    "54": {
+        "long": "Amounts, Additional",
+        "short": "Additional Amts",
+        "len": 999,
+        "pad": 3
+    },
+    "55": {
+        "long": "Integrated Circuit Card System Related Data",
+        "short": "ICC System Related Data",
+        "len": 999,
+        "pad": 3
+    },
+    "56": {
+        "long": "Original Data Elements",
+        "short": "Orig Data Elements",
+        "len": 99,
+        "pad": 2
+    },
+    "57": {
+        "long": "Authorization Life Cycle Code",
+        "short": "Auth Life Cycle Code",
+        "len": 3,
+        "pad": 0
+    },
+    "58": {
+        "long": "Authorizing Agent Institution ID Code",
+        "short": "Auth Agent Inst ID",
+        "len": 99,
+        "pad": 2
+    },
+    "59": {
+        "long": "Transport Data",
+        "short": "Transport Data",
+        "len": 999,
+        "pad": 3
+    },
+    "60": {
+        "long": "Reserved for National Use",
+        "short": "Reserved for National Use",
+        "len": 999,
+        "pad": 3
+    },
+    "61": {
+        "long": "Reserved for National Use",
+        "short": "Reserved for National Use",
+        "len": 999,
+        "pad": 3
+    },
+    "62": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
+        "len": 999,
+        "pad": 3
+    },
+    "63": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved for Private Use",
+        "len": 999,
+        "pad": 3
+    },
+    "64": {
+        "long": "Primary Message Authentication Code",
+        "short": "Primary MAC",
+        "len": 64,
+        "pad": 0
+    },
+    "65": {
+        "long": "Reserved - ISO",
+        "short": "Reserved - ISO",
+        "len": 64,
+        "pad": 0
+    },
+    "66": {
+        "long": "Amounts, Original Fees",
+        "short": "Orig Fees Amts",
+        "len": 999,
+        "pad": 3
+    },
+    "67": {
+        "long": "Extended Payment Data",
+        "short": "Extended Payment Data",
+        "len": 2,
+        "pad": 0
+    },
+    "68": {
+        "long": "Country Code, Receiving Institution",
+        "short": "Rcving Inst Country Code",
+        "len": 3,
+        "pad": 0
+    },
+    "69": {
+        "long": "Settlement Institution Country Code?",
+        "short": "Stl Inst Country Code",
+        "len": 3,
+        "pad": 0
+    },
+    "70": {
+        "long": "Country Code, Authorizing Agent Institution",
+        "short": "Auth Agent Inst Country Code",
+        "len": 3,
+        "pad": 0
+    },
+    "71": {
+        "long": "Message Number",
+        "short": "Msg Num",
+        "len": 8,
+        "pad": 0
+    },
+    "72": {
+        "long": "Data Record",
+        "short": "Data Record",
+        "len": 999,
+        "pad": 3
+    },
+    "73": {
+        "long": "Date, Action",
+        "short": "Date, Action",
+        "len": 6,
+        "pad": 0
+    },
+    "74": {
+        "long": "Credits, Number",
+        "short": "Credits, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "75": {
+        "long": "Credits, Reversal Number",
+        "short": "Credits, Rvrsl Num",
+        "len": 10,
+        "pad": 0
+    },
+    "76": {
+        "long": "Debits, Number",
+        "short": "Debits, Number",
+        "len": 10,
+        "pad": 0
+    },
+    "77": {
+        "long": "Debits, Reversal Number",
+        "short": "Debits, Rvrsl Num",
+        "len": 10,
+        "pad": 0
+    },
+    "78": {
+        "long": "Transfers, Number",
+        "short": "Transfers, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "79": {
+        "long": "Transfers, Reversal Number",
+        "short": "Transfers, Reversal Num",
+        "len": 10,
+        "pad": 0
+    },
+    "80": {
+        "long": "Inquiries, Number",
+        "short": "Inquiries, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "81": {
+        "long": "Authorizations, Number",
+        "short": "Authorizations, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "82": {
+        "long": "Inquiries, Reversal Number",
+        "short": "Inquiries, Reversal Num",
+        "len": 10,
+        "pad": 0
+    },
+    "83": {
+        "long": "Payments, Number",
+        "short": "Payments, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "84": {
+        "long": "Payments, Reversal Number",
+        "short": "Payments, Reversal Num",
+        "len": 10,
+        "pad": 0
+    },
+    "85": {
+        "long": "Fee Collections, Number",
+        "short": "Fee Collections, Num",
+        "len": 10,
+        "pad": 0
+    },
+    "86": {
+        "long": "Credits, Amount",
+        "short": "Credits, Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "87": {
+        "long": "Credits, Reversal Amount",
+        "short": "Credits, Rvrsl Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "88": {
+        "long": "Debits, Amount",
+        "short": "Debits, Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "89": {
+        "long": "Debits, Reversal Amount",
+        "short": "Debits, Rvrsl Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "90": {
+        "long": "Authorizations, Reversal Number",
+        "short": "Auth, Reversal Num",
+        "len": 10,
+        "pad": 0
+    },
+    "91": {
+        "long": "Transaction Destination Institution Country",
+        "short": "Tran Dest Inst Country",
+        "len": 3,
+        "pad": 0
+    },
+    "92": {
+        "long": "Transaction Originator Institution Country",
+        "short": "Tran Orig Inst Country",
+        "len": 3,
+        "pad": 0
+    },
+    "93": {
+        "long": "Transaction Destination Institution Identification Code",
+        "short": "Txn Destn Inst ID",
+        "len": 99,
+        "pad": 2
+    },
+    "94": {
+        "long": "Transaction Originator Institution Identification Code",
+        "short": "Txn Orig Inst ID",
+        "len": 99,
+        "pad": 2
+    },
+    "95": {
+        "long": "Card Issuer Reference Data",
+        "short": "Card Issuer Ref Data",
+        "len": 99,
+        "pad": 2
+    },
+    "96": {
+        "long": "Key Management Data",
+        "short": "Key Mgmt Data",
+        "len": 999,
+        "pad": 3
+    },
+    "97": {
+        "long": "Net Reconciliation Amount",
+        "short": "Net Recon Amt",
+        "len": 17,
+        "pad": 0
+    },
+    "98": {
+        "long": "Payee",
+        "short": "Payee",
+        "len": 25,
+        "pad": 0
+    },
+    "99": {
+        "long": "Settlement Institution Identification Code",
+        "short": "Stl Inst ID Code",
+        "len": 99,
+        "pad": 2
+    },
+    "100": {
+        "long": "Receiving Institution Identification Code",
+        "short": "Rcving Inst ID Code",
+        "len": 99,
+        "pad": 2
+    },
+    "101": {
+        "long": "File Name",
+        "short": "File Name",
+        "len": 99,
+        "pad": 2
+    },
+    "102": {
+        "long": "Account Identification 1",
+        "short": "Acct ID 1",
+        "len": 99,
+        "pad": 2
+    },
+    "103": {
+        "long": "Account Identification 2",
+        "short": "Acct Id 2",
+        "len": 99,
+        "pad": 2
+    },
+    "104": {
+        "long": "Transaction Description",
+        "short": "Txn Desc",
+        "len": 999,
+        "pad": 3
+    },
+    "105": {
+        "long": "Credits Charge back Amount",
+        "short": "Credits Chgbck Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "106": {
+        "long": "Debits Charge back Amount",
+        "short": "Debits Chgbck Amt",
+        "len": 16,
+        "pad": 0
+    },
+    "107": {
+        "long": "Credits Charge back Amount",
+        "short": "Credits Chgbck Amt",
+        "len": 10,
+        "pad": 0
+    },
+    "108": {
+        "long": "Debits Charge back Amount",
+        "short": "Debits Chgbck Amt",
+        "len": 10,
+        "pad": 0
+    },
+    "109": {
+        "long": "Credits Fees Amount",
+        "short": "Credits Fees Amt",
+        "len": 99,
+        "pad": 2
+    },
+    "110": {
+        "long": "Debits Fees Amount",
+        "short": "Debits Fees Amt",
+        "len": 99,
+        "pad": 2
+    },
+    "111": {
+        "long": "Reserved for ISO Use",
+        "short": "Reserved - ISO",
+        "len": 999,
+        "pad": 3
+    },
+    "112": {
+        "long": "Reserved for ISO Use",
+        "short": "Reserved - ISO",
+        "len": 999,
+        "pad": 3
+    },
+    "113": {
+        "long": "Reserved for ISO Use",
+        "short": "Reserved - ISO",
+        "len": 999,
+        "pad": 3
+    },
+    "114": {
+        "long": "Reserved for ISO Use",
+        "short": "Reserved - ISO",
+        "len": 999,
+        "pad": 3
+    },
+    "115": {
+        "long": "Reserved for ISO Use",
+        "short": "Reserved - ISO",
+        "len": 999,
+        "pad": 3
+    },
+    "116": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "117": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "118": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "119": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "120": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "121": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "122": {
+        "long": "Reserved for National Use",
+        "short": "Reserved - National",
+        "len": 999,
+        "pad": 3
+    },
+    "123": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved - Private",
+        "len": 999,
+        "pad": 3
+    },
+    "124": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved - Private",
+        "len": 999,
+        "pad": 4
+    },
+    "125": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved - Private",
+        "len": 999,
+        "pad": 4
+    },
+    "126": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved - Private",
+        "len": 999,
+        "pad": 3
+    },
+    "127": {
+        "long": "Reserved for Private Use",
+        "short": "Reserved - Private",
+        "len": 9999,
+        "pad": 4
+    },
+    "128": {
+        "long": "Secondary Message Authentication Code",
+        "short": "Secondary MAC",
+        "len": 16,
+        "pad": 0
+    }
+}
