@@ -189,7 +189,7 @@ class Iso(ABC):
             raise UnsupportedIsoVersion(defaultdict(
                 lambda: '', {'version': version}))
 
-    def download_iso_file(self, download_path=None, version=None):
+    def download_iso_format_file(self, download_path=None, version=None):
         if version is None:
             version = self.__iso_version
         try:
@@ -198,7 +198,9 @@ class Iso(ABC):
             download_path = Path(download_path).absolute().resolve()
             shutil.copy(ISO_FILES[version], download_path)
         except KeyError:
-            print('Unsupported Iso version {}.'.format(version))
+            logging.error('Unsupported Iso version {}.'.format(version))
+            raise UnsupportedIsoVersion(defaultdict(
+                lambda: '', {'version': version}))
 
     def supported_versions(self):
         return SUPPORTED_VERSIONS
@@ -279,7 +281,6 @@ class IsoStream(Iso):
                     print(formatted_fields)
                 except Exception as ex:
                     logging.error(ex)
-                    print(ex, ex.errors)
 
         if self.event and not self.event.is_set():
             logging.error(
