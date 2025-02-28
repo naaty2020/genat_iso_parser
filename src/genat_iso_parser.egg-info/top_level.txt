@@ -1,2 +1,2 @@
 genat_iso_parser
-resources
+iso_res

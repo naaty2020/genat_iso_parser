@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools >= 61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "genat_iso_parser"
-version = "3.0"
+version = "1.0"
 authors = [
   { name="Nathnael Fikru", email="natfik2020@gmail.com" },
 ]
@@ -16,7 +16,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-include-package-data = true
-
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+iso_res = ["*.json"]

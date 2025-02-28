@@ -9,4 +9,6 @@ src/genat_iso_parser.egg-info/PKG-INFO
 src/genat_iso_parser.egg-info/SOURCES.txt
 src/genat_iso_parser.egg-info/dependency_links.txt
 src/genat_iso_parser.egg-info/top_level.txt
-src/resources/__init__.py
+src/iso_res/ISO_0.json
+src/iso_res/ISO_1.json
+src/iso_res/__init__.py
