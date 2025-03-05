@@ -1,63 +1,119 @@
-Genat Iso Parser
+<h4>Genat Iso Parser</h4>
 
 An iso message bulk editor and parsor.
 
-Usage Example:
-    '''
+<h5>Usage:</h5>
+    
     +---------------------------+
-    |       ISO STREAMING       |
+    |       <b>ISO STREAMING</b>       |
     +---------------------------+
-    * instantiate an instance of IsoStream
+    # instantiate an instance of IsoStream
     iso = IsoStream()
     
-    * change any field value of your choice
-    iso.change_field(2, '9999999999999999')
-    
-    * remove any number of fields of your choice
-    iso.remove_fields(3, 4)
+    # get current version
+    iso.iso_version
 
-    * append a field alomg with value
-    iso.append_field(99, 'idugfhdisuo')
+    # get supported versions
+    iso.supported_versions()
 
-    * allow length of fields(if there is any) tobe printed to the output
-    iso.turn_on_length()
-    
-    * turn off fields length to be printed
-    iso.turn_off_length()
-    
-    * capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
-    iso.stream()
-    
-    * stop streaming
+    # change any field value of your choice
+    iso.changed_fields = IsoDict({3: '001100'})
+    iso.changed_fields[2] = '9999999999999999999'
+
+    # remove any number of fields of your choice
+    iso.removed_fields.add(7)
+    iso.removed_fields.update({3, 4})
+
+    # add a field alomg with value
+    iso.added_fields.update({100: 'rywiujfbw8efhsdjkb'})
+    iso.added_fields[99] = 'isuhgghioadhfgioahdnf'
+
+    # allow length of fields(if there is any) tobe printed to the output
+    iso.include_length = True
+
+    # turn off fields length to be printed
+    iso.include_length = False
+
+    # capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
+    iso.stream('iso')
+
+    # stop streaming
     iso.stop_stream()
 
     +--------------------------+
-    |         ISO FILE         |
+    |         <b>ISO FILE</b>         |
     +--------------------------+
-    * instantiate an instance of IsoFile, default version is 93
-    iso = IsoFile("path_to_file")
+    # instantiate an instance of IsoFile, default version is 93
+    iso = IsoFile("your file here")
 
-    * change any field value of your choice
-    iso.change_field(2, '9999999999999999')
-    
-    * remove any number of fields of your choice
-    iso.remove_fields(3, 4)
+    # get current version
+    iso.iso_version
 
-    * append a field alomg with value
-    iso.append_field(99, '11idugfhdisuo')
-    
-    * allow length of fields(if there is any) tobe printed to the output
-    iso.turn_on_length()
-    
-    * turn off fields length to be printed
-    iso.turn_off_length()
+    # get supported versions
+    iso.supported_versions()
 
-    * produce csv file from the iso
+    # change any field value of your choice
+    iso.changed_fields = IsoDict({3: '001100'})
+    iso.changed_fields[2] = '1999999999999999999'
+
+    # remove any number of fields of your choice
+    iso.removed_fields.add(5)
+    iso.removed_fields.update({3, 4})
+
+    # add a field alomg with value
+    # iso.added_fields = {100: 'rewayhfgiojsed'}
+    iso.added_fields[99] = 'isuhgghifgiosdjfoiaknoadhfgioahdnf'
+
+    # allow length of fields(if there is any) tobe printed to the output
+    iso.include_length = True
+
+    # turn off fields length to be printed
+    iso.include_length = False
+
+    # produce csv file from the iso
     csv_file = iso.to_csv()
 
-    * produce iso file from the iso (might be useful for inspection of the iso)
+    # produce iso file from the iso (might be useful for inspection of the iso)
     iso_file = iso.to_iso()
 
-    * produce json file from the iso
+    # produce json file from the iso
     json_file = iso.to_json()
-    '''
+
+    
+	<h5>Iso format JSON file (ISO.json)</h5>
+    Layout:
+        {
+            "A": {
+                "long": "B",
+                "short": "C",
+                "len": D,
+                "pad": E
+            },
+            .
+            .
+            .
+        }
+    A -> field number
+    B -> field long name
+    C -> field short name
+    D -> field length
+    E -> length/size of leading field length for variable field lengths (Ex: field2 PAN has a pad of 2)
+
+    Sample:
+    {
+        "1": {
+            "long": "Secondary Bit Map",
+            "short": "BITMAP2",
+            "len": 16,
+            "pad": 0
+        },
+        "2": {
+            "long": "Primary Account Number",
+            "short": "PAN",
+            "len": 19,
+            "pad": 2
+        },
+        .
+        .
+        .
+    }
