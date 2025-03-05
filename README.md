@@ -5,7 +5,7 @@ An iso message bulk editor and parsor.
 <h5>Usage:</h5>
     
     +---------------------------+
-    |       <b>ISO STREAMING</b>       |
+    |       **ISO STREAMING**       |
     +---------------------------+
     # instantiate an instance of IsoStream
     iso = IsoStream()
@@ -41,7 +41,7 @@ An iso message bulk editor and parsor.
     iso.stop_stream()
 
     +--------------------------+
-    |         <b>ISO FILE</b>         |
+    |         **ISO FILE**         |
     +--------------------------+
     # instantiate an instance of IsoFile, default version is 93
     iso = IsoFile("your file here")
