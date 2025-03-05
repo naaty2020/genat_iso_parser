@@ -1,119 +1,121 @@
-<h4>Genat Iso Parser</h4>
+#### Genat Iso Parser
 
 An iso message bulk editor and parsor.
 
-<h5>Usage:</h5>
+##### Usage:
     
-    +---------------------------+
-    |       ISO STREAMING       |
-    +---------------------------+
-    # instantiate an instance of IsoStream
-    iso = IsoStream()
-    
-    # get current version
-    iso.iso_version
+###### ISO STREAMING
 
-    # get supported versions
-    iso.supported_versions()
+**import the library**
+    `from genat_iso_parser.Iso import IsoDict, IsoFile, IsoStream`
 
-    # change any field value of your choice
-    iso.changed_fields = IsoDict({3: '001100'})
-    iso.changed_fields[2] = '9999999999999999999'
+**instantiate an instance of IsoStream**
+    `iso = IsoStream()`
 
-    # remove any number of fields of your choice
-    iso.removed_fields.add(7)
-    iso.removed_fields.update({3, 4})
+**get current version**
+    `iso.iso_version`
 
-    # add a field alomg with value
-    iso.added_fields.update({100: 'rywiujfbw8efhsdjkb'})
-    iso.added_fields[99] = 'isuhgghioadhfgioahdnf'
+**get supported versions**
+    `iso.supported_versions()`
 
-    # allow length of fields(if there is any) tobe printed to the output
-    iso.include_length = True
+**change any field value of your choice**
+    `iso.changed_fields = IsoDict({3: '001100'})`
+    `iso.changed_fields[2] = '9999999999999999999'`
 
-    # turn off fields length to be printed
-    iso.include_length = False
+**remove any number of fields of your choice**
+    `iso.removed_fields.add(7)`
+    `iso.removed_fields.update({3, 4})`
 
-    # capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
-    iso.stream('iso')
+**add a field alomg with value**
+    `iso.added_fields.update({100: 'rywiujfbw8efhsdjkb'})`
+    `iso.added_fields[99] = 'isuhgghioadhfgioahdnf'`
 
-    # stop streaming
-    iso.stop_stream()
+**allow length of fields(if there is any) tobe printed to the output**
+    `iso.include_length = True`
 
-    +--------------------------+
-    |         ISO FILE         |
-    +--------------------------+
-    # instantiate an instance of IsoFile, default version is 93
-    iso = IsoFile("your file here")
+**turn off fields length to be printed**
+    `iso.include_length = False`
 
-    # get current version
-    iso.iso_version
+**capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout**
+    `iso.stream('iso')`
 
-    # get supported versions
-    iso.supported_versions()
+**stop streaming**
+    `iso.stop_stream()`
 
-    # change any field value of your choice
-    iso.changed_fields = IsoDict({3: '001100'})
-    iso.changed_fields[2] = '1999999999999999999'
 
-    # remove any number of fields of your choice
-    iso.removed_fields.add(5)
-    iso.removed_fields.update({3, 4})
+###### ISO FILE         
 
-    # add a field alomg with value
-    # iso.added_fields = {100: 'rewayhfgiojsed'}
-    iso.added_fields[99] = 'isuhgghifgiosdjfoiaknoadhfgioahdnf'
+**instantiate an instance of IsoFile, default version is 93**
+    `iso = IsoFile("your file here")`
 
-    # allow length of fields(if there is any) tobe printed to the output
-    iso.include_length = True
+**get current version**
+    `iso.iso_version`
 
-    # turn off fields length to be printed
-    iso.include_length = False
+**get supported versions**
+    `iso.supported_versions()`
 
-    # produce csv file from the iso
-    csv_file = iso.to_csv()
+**change any field value of your choice**
+    `iso.changed_fields = IsoDict({3: '001100'})`
+    `iso.changed_fields[2] = '1999999999999999999'`
 
-    # produce iso file from the iso (might be useful for inspection of the iso)
-    iso_file = iso.to_iso()
+**remove any number of fields of your choice**
+    `iso.removed_fields.add(5)`
+    `iso.removed_fields.update({3, 4})`
 
-    # produce json file from the iso
-    json_file = iso.to_json()
+**add a field alomg with value**
+    `iso.added_fields = {100: 'rewayhfgiojsed'}`
+    `iso.added_fields[99] = 'isuhgghifgiosdjfoiaknoadhfgioahdnf'`
 
-    
-	<h5>Iso format JSON file (ISO.json)</h5>
-    Layout:
-        {
-            "A": {
-                "long": "B",
-                "short": "C",
-                "len": D,
-                "pad": E
-            },
-            .
-            .
-            .
-        }
-    A -> field number
-    B -> field long name
-    C -> field short name
-    D -> field length
-    E -> length/size of leading field length for variable field lengths (Ex: field2 PAN has a pad of 2)
+**allow length of fields(if there is any) tobe printed to the output**
+    `iso.include_length = True`
 
-    Sample:
-    {
-        "1": {
-            "long": "Secondary Bit Map",
-            "short": "BITMAP2",
-            "len": 16,
-            "pad": 0
-        },
-        "2": {
-            "long": "Primary Account Number",
-            "short": "PAN",
-            "len": 19,
-            "pad": 2
-        },
-        .
-        .
-        .
-    }
+**turn off fields length to be printed**
+    `iso.include_length = False`
+
+**produce csv file from the iso**
+    `csv_file = iso.to_csv()`
+
+**produce iso file from the iso (might be useful for inspection of the iso)**
+    `iso_file = iso.to_iso()`
+
+**produce json file from the iso**
+    `json_file = iso.to_json()`
+
+
+##### Iso format JSON file (ISO.json)
+**Layout:**
+{
+    "A": {
+	"long": "B",
+	"short": "C",
+	"len": D,
+	"pad": E
+    },
+    .
+    .
+    .
+}
+- A -> field number
+- B -> field long name
+- C -> field short name
+- D -> field length
+- E -> length/size of leading field length for variable field lengths (Ex: field2 PAN has a pad of 2)
+
+**Sample:**
+{
+"1": {
+    "long": "Secondary Bit Map",
+    "short": "BITMAP2",
+    "len": 16,
+    "pad": 0
+},
+"2": {
+    "long": "Primary Account Number",
+    "short": "PAN",
+    "len": 19,
+    "pad": 2
+},
+.
+.
+.
+}
