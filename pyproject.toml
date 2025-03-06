@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "genat_iso_parser"
-version = "1.0"
+version = "1.2"
 authors = [
   { name="Nathnael Fikru", email="natfik2020@gmail.com" },
 ]
