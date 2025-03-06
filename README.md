@@ -84,6 +84,10 @@ An iso message bulk editor and parsor.
 
 ##### Iso format JSON file (ISO.json)
 
+**This part is only needed if there is a need to define your own ISO format file (Ex: defining your own ISO like ISO 20022)**  
+**This can be achieved using `iso.custom_iso_version_file(file="your ISO format file", version="ISO version(Ex: 2)")`**  
+**Additionally you can use the librariy's default ISO format as a sample by dowloading it using `iso.download_iso_format_file()`**
+
 **Layout:**
 
 >{  
