@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: genat_iso_parser
-Version: 1.0
+Version: 1.2
 Summary: An iso message bulk parser
 Author-email: Nathnael Fikru <natfik2020@gmail.com>
 Classifier: Programming Language :: Python :: 3
@@ -9,66 +9,132 @@ Classifier: Operating System :: OS Independent
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-Genat Iso Parser
+#### Genat Iso Parser
 
 An iso message bulk editor and parsor.
 
-Usage Example:
-    '''
-    +---------------------------+
-    |       ISO STREAMING       |
-    +---------------------------+
-    * instantiate an instance of IsoStream
-    iso = IsoStream()
+##### Usage:
     
-    * change any field value of your choice
-    iso.change_field(2, '9999999999999999')
-    
-    * remove any number of fields of your choice
-    iso.remove_fields(3, 4)
+###### ISO STREAMING
 
-    * append a field alomg with value
-    iso.append_field(99, 'idugfhdisuo')
+**import the library**  
+    `from genat_iso_parser.Iso import IsoDict, IsoFile, IsoStream`
 
-    * allow length of fields(if there is any) tobe printed to the output
-    iso.turn_on_length()
-    
-    * turn off fields length to be printed
-    iso.turn_off_length()
-    
-    * capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout
-    iso.stream()
-    
-    * stop streaming
-    iso.stop_stream()
+**instantiate an instance of IsoStream**  
+    `iso = IsoStream()`
 
-    +--------------------------+
-    |         ISO FILE         |
-    +--------------------------+
-    * instantiate an instance of IsoFile, default version is 93
-    iso = IsoFile("path_to_file")
+**get current version**  
+    `iso.iso_version`
 
-    * change any field value of your choice
-    iso.change_field(2, '9999999999999999')
-    
-    * remove any number of fields of your choice
-    iso.remove_fields(3, 4)
+**get supported versions**  
+    `iso.supported_versions()`
 
-    * append a field alomg with value
-    iso.append_field(99, '11idugfhdisuo')
-    
-    * allow length of fields(if there is any) tobe printed to the output
-    iso.turn_on_length()
-    
-    * turn off fields length to be printed
-    iso.turn_off_length()
+**change any field value of your choice**  
+    `iso.changed_fields = IsoDict({3: '001100'})`  
+    `iso.changed_fields[2] = '9999999999999999999'`
 
-    * produce csv file from the iso
-    csv_file = iso.to_csv()
+**remove any number of fields of your choice**  
+    `iso.removed_fields.add(7)`  
+    `iso.removed_fields.update({3, 4})`
 
-    * produce iso file from the iso (might be useful for inspection of the iso)
-    iso_file = iso.to_iso()
+**add a field alomg with value**  
+    `iso.added_fields.update({100: 'rywiujfbw8efhsdjkb'})`  
+    `iso.added_fields[99] = 'isuhgghioadhfgioahdnf'`
 
-    * produce json file from the iso
-    json_file = iso.to_json()
-    '''
+**allow length of fields(if there is any) tobe printed to the output**  
+    `iso.include_length = True`
+
+**turn off fields length to be printed**  
+    `iso.include_length = False`
+
+**capture iso messages that come through stdin (default is 'json' the other one is 'iso') and output to stdout**  
+    `iso.stream('iso')`
+
+**stop streaming**  
+    `iso.stop_stream()`
+
+
+###### ISO FILE         
+
+**instantiate an instance of IsoFile, default version is 93**  
+    `iso = IsoFile("your file here")`
+
+**get current version**  
+    `iso.iso_version`
+
+**get supported versions**  
+    `iso.supported_versions()`
+
+**change any field value of your choice**  
+    `iso.changed_fields = IsoDict({3: '001100'})`  
+    `iso.changed_fields[2] = '1999999999999999999'`
+
+**remove any number of fields of your choice**  
+    `iso.removed_fields.add(5)`  
+    `iso.removed_fields.update({3, 4})`
+
+**add a field alomg with value**  
+    `iso.added_fields = {100: 'rewayhfgiojsed'}`  
+    `iso.added_fields[99] = 'isuhgghifgiosdjfoiaknoadhfgioahdnf'`
+
+**allow length of fields(if there is any) tobe printed to the output**  
+    `iso.include_length = True`
+
+**turn off fields length to be printed**  
+    `iso.include_length = False`
+
+**produce csv file from the iso**  
+    `csv_file = iso.to_csv()`
+
+**produce iso file from the iso (might be useful for inspection of the iso)**  
+    `iso_file = iso.to_iso()`
+
+**produce json file from the iso**  
+    `json_file = iso.to_json()`
+
+
+##### Iso format JSON file (ISO.json)
+
+**This part is only needed if there is a need to define your own ISO format file (Ex: defining your own ISO like ISO 20022)**  
+**This can be achieved using `iso.custom_iso_version_file(file="your ISO format file", version="ISO version(Ex: 2)")`**  
+**Additionally you can use the librariy's default ISO format as a sample by dowloading it using `iso.download_iso_format_file()`**
+
+**Layout:**
+
+>{  
+>    "A": {  
+>	"long": "B",  
+>	"short": "C",  
+>	"len": D,  
+>	"pad": E  
+>    },  
+>    .  
+>    .  
+>    .  
+>}
+
+- A -> field number
+- B -> field long name
+- C -> field short name
+- D -> field length
+- E -> length/size of leading field length for variable field lengths (Ex: field2 PAN has a pad of 2)  
+
+**Sample:**
+
+>{  
+>"1": {  
+>    "long": "Secondary Bit Map",  
+>    "short": "BITMAP2",  
+>    "len": 16,  
+>    "pad": 0  
+>},  
+>"2": {  
+>    "long": "Primary Account Number",  
+>    "short": "PAN",  
+>    "len": 19,  
+>    "pad": 2  
+>},  
+>.  
+>.  
+>.  
+>}

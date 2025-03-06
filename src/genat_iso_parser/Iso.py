@@ -311,7 +311,7 @@ class IsoFile(Iso):
     def __init__(self, file) -> None:
         super().__init__()
         self.file = Path(file).resolve()
-        self.failed_file = self.file.with_stem(self.file.stem + '_failed')
+        self.failed_file = self.file.with_name(self.file.stem + '_failed' + self.file.suffix)
         self.max_bitmap = MAX_BITMAP
 
     def parse(self, is_iso=False):
@@ -328,7 +328,7 @@ class IsoFile(Iso):
     def get_file_name(self, extension):
         file = self.file.with_suffix(extension)
         while os.path.exists(file):
-            file = file.with_stem(file.stem + '1')
+            file = file.with_name(file.stem + '1' + file.suffix)
         return file
 
     def to_csv(self):
